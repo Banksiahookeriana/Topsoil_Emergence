@@ -15,6 +15,10 @@ gsmall<- data[data$dataStart=="spr12" | data$dataStart=="spr12only",]#only recor
 gsmall1<-gsmall[gsmall$TST== 0.5,]#only in spring2012=tst05
 EmDensities2012<-gsmall1[gsmall1$TST== 0.5 & gsmall1$nat=="native" ,]#only natives
 
+##JBF
+####Now that we have decided to drop all the fine-scale plot treatments, maybe it is easy to simplify here?
+#subset out all the small scale treatments --- I don't use 'droplevels' so not 100% certain that's what you're doing??
+
 levels(droplevels(EmDensities2012$nat))#native 
 levels(droplevels(gsmall1$plot2))#"control","herbicide", "plastic" ,"shade","shade.semi"    "smoke"         "smoke.plastic"
 dim(EmDensities2012)#10333    23
@@ -66,6 +70,17 @@ PER.glmer.spr12.interactions<-glmer(sum4m2 ~ rip+fence+Transdepth+rip*fence+fenc
                        +rip*Transdepth + plot2 + rip*plot2 +Transdepth*plot2
                        +(1|site/cluster),family = poisson(link="log"), data=perennials.year.one)
 summary(PER.glmer.spr12.interactions)
+
+##JBF: here reformulate the model to include:
+#a) plant functional groups --factors of woody/non-woody, resprouter/non-sprouter, any other attributes we think are relevant
+#b) random effect of species
+PER.glmer.spr12.interactions<-glmer(sum4m2 ~ rip*fence+fence*Transdepth
+                       +rip*Transdepth + plot2 + rip*plot2 +Transdepth*plot2
+                       +(1|site/cluster) ,family = poisson(link="log"), data=perennials.year.one)
+summary(PER.glmer.spr12.interactions)
+
+
+
 
 #OUTPUT:
 #####################################Estimate Std. Error z value Pr(>|z|)    
